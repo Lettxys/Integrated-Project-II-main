@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/1aabbae507.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="/eel.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
     <title>Login - Mercado Ximenes</title>
 </head>
 <body class="pagina-login">
 
     <header>
-        <img src="./img/background_cadastro.png" alt="Banner">
+        <img src="../img/background_cadastro.png" alt="Banner">
         <div class="overlay-degrade"></div>
     </header>
 
@@ -20,14 +21,47 @@
         </a>
 
         <div class="login-container">
-        <form>
-            <input type="text" placeholder="Usuário" class="input-login">
-            <input type="password" placeholder="Senha" class="input-login">
+        <form id="form-login">
+            <input type="text" id="login-user" placeholder="Usuário" class="input-login">
+            <input type="password" id="login-senha" placeholder="Senha" class="input-login">
             
-            <a href="compras.html" class="btn-entrar">Login</a>
+            <button type="submit" class="btn-entrar">Entrar</button>
         </form>
+
+        <div class="criar-conta">
+            <p>Não possui conta? <a href="cadastro.html">Criar agora</a></p>
+        </div>
     </div>
     </main>
+
+    <script>
+       const form = document.getElementById('form-login');
+
+        form.onsubmit = async function(event) {
+            event.preventDefault(); 
+
+            const user = document.getElementById('login-user').value;
+            const senha = document.getElementById('login-senha').value;
+
+            if (!user || !senha) {
+                alert("Preencha usuário e senha!");
+                return;
+            }
+
+            const resultado = await eel.tentar_login(user, senha)();
+            
+            const sucesso = resultado[0];
+            const mensagem = resultado[1];
+
+            if (sucesso) {
+                alert(mensagem);
+                window.location.href = "compras.html";
+            } else {
+                alert(mensagem);
+            }
+        };
+
+    </script>
 
 </body>
 </html>

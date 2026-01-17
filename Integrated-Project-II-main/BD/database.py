@@ -65,15 +65,15 @@ def criar_banco():
 if __name__ == "__main__":
     criar_banco()
 
-def cadastrar_usuario(id_usuario, user, nome, cpf, senha, tipo_usuario):
+def cadastrar_usuario(user, nome, cpf, senha, tipo_usuario):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
     try:
         cursor.execute('''
-            INSERT INTO usuarios (id_usuario, user, nome, cpf, senha, tipo_usuario)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (id_usuario, user, nome, cpf, senha, tipo_usuario))
+            INSERT INTO usuarios (user, nome, cpf, senha, tipo_usuario)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (user, nome, cpf, senha, tipo_usuario))
         conn.commit()
         return True, "Cadastro realizado com sucesso!"
     
@@ -83,3 +83,23 @@ def cadastrar_usuario(id_usuario, user, nome, cpf, senha, tipo_usuario):
         return False, f"Erro desconhecido: {str(e)}"
     finally:
         conn.close()
+
+def validar_login(user, senha):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT nome, tipo_usuario
+        FROM usuarios
+        WHERE user = ? AND senha = ?
+    ''', (user, senha))
+
+    resultado = cursor.fetchone()
+    conn.close()
+
+    if resultado:
+        return True, resultado[0], resultado[1]
+    else:
+        return False, None, None
+    
+
