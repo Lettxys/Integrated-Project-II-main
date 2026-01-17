@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/1aabbae507.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/eel.js"></script>
+    <script src="../js/scripts.js"></script>
     <link rel="stylesheet" href="../css/style.css">
     <title>Cadastro - Mercado Ximenes</title>
 </head>
@@ -67,7 +68,7 @@
         const confirmaSenha = document.getElementById('input-confirma-senha').value;
 
         if (senha != confirmaSenha){
-            alert("As senhas não coincidem!");
+            mostrarAlerta("As senhas não coincidem!");
             return;
         }
 
@@ -90,7 +91,7 @@
     document.getElementById('btn-finalizar-dono').onclick = async function() {
         const senhaMestra = document.getElementById('input-senha-universal').value;
         if (!senhaMestra) {
-            alert("Digite a senha universal!");
+            mostrarAlerta("Digite a senha universal!");
             return;
         }
         await enviarParaPython(dadosCadastro, 'dono', senhaMestra);
@@ -107,11 +108,10 @@
         )();
 
         if (resultado[0] == true) {
-            alert("Sucesso: " + resultado[1]);
-            window.location.href = "login.html";
+            mostrarAlerta("Sucesso: " + resultado[1], "login.html");
         } else {
-            alert("Erro: " + resultado[1]);
-            modal.style.display = "none";
+            modalPergunta.style.display = "none";
+            mostrarAlerta("Erro: " + resultado[1]);
         }
     }
 
