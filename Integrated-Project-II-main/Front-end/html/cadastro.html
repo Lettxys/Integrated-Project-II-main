@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/1aabbae507.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/eel.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Cadastro - Mercado Ximenes</title>
+</head>
+<body class="pagina-cadastro">
+
+    <header>
+        <img src="../img/background_cadastrarr.png" alt="Banner">
+        <div class="overlay-degrade"></div>
+    </header>
+
+    <main>
+        <a href="login.html" class="btn-voltar">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+
+        <div class="cadastro-container">
+            <form id="form-cadastro"> 
+                <input type="text" id="input-user" placeholder="Usuário" class="input-login" required>
+                <input type="text" id="input-nome" placeholder="Nome" class="input-login" required>
+                <input type="text" id="input-cpf" placeholder="CPF" class="input-login" required>
+                <input type="password" id="input-senha" placeholder="Senha" class="input-login" required>
+                <input type="password" id="input-confirma-senha" placeholder="Confirmar senha" class="input-login" required>
+                
+                <button type="submit" class="btn-entrar">Cadastrar</button>
+            </form>
+        </div>
+    </main>
+
+    <div id="modal-pergunta" class="modal">
+        <div class="modal-conteudo" id="etapa-1">
+            <h3>A nova conta é de caixa ou de dono?</h3>
+            <div class="modal-botoes">
+                <button type="button" class="btn-dono" id="btn-escolha-dono">Dono</button>
+                <button type="button" class="btn-caixa" id="btn-escolha-caixa">Caixa</button>
+            </div>
+        </div>
+
+        <div class="modal-conteudo" id="etapa-senha-universal" style="display: none;">
+            <h3 style="text-align: left; font-size: 1.1rem;">Digite a senha universal para criar uma nova conta de dono:</h3>
+            <input type="password" id="input-senha-universal" placeholder="Senha universal" class="input-universal">
+            <button type="button" class="btn-continuar" id="btn-finalizar-dono">Continuar</button>
+        </div>
+    </div>
+
+   <script>
+    const form = document.getElementById('form-cadastro');
+    const modal = document.getElementById('modal-pergunta');
+    const etapa1 = document.getElementById('etapa-1');
+    const etapaSenha = document.getElementById('etapa-senha-universal');
+    
+    let dadosCadastro = {};
+
+    form.onsubmit = function(event) {
+        event.preventDefault();
+
+        const user = document.getElementById('input-user').value;
+        const nome = document.getElementById('input-nome').value;
+        const cpf = document.getElementById('input-cpf').value;
+        const senha = document.getElementById('input-senha').value;
+        const confirmaSenha = document.getElementById('input-confirma-senha').value;
+
+        if (senha != confirmaSenha){
+            alert("As senhas não coincidem!");
+            return;
+        }
+
+        dadosCadastro = { user, nome, cpf, senha }
+
+        modal.style.display = 'flex';
+        etapa1.style.display = 'block';
+        etapaSenha.style.display = 'none';
+    };
+
+    document.getElementById('btn-escolha-caixa').onclick = async function() {
+        await enviarParaPython(dadosCadastro, 'caixa', '');
+    };
+
+    document.getElementById('btn-escolha-dono').onclick = function() {
+        etapa1.style.display = 'none';
+        etapaSenha.style.display = 'block';
+    };
+
+    document.getElementById('btn-finalizar-dono').onclick = async function() {
+        const senhaMestra = document.getElementById('input-senha-universal').value;
+        if (!senhaMestra) {
+            alert("Digite a senha universal!");
+            return;
+        }
+        await enviarParaPython(dadosCadastro, 'dono', senhaMestra);
+    };
+
+    async function enviarParaPython(dados, tipo, senhaMestra) {
+        const resultado = await eel.tentar_cadastro(
+            dados.user,
+            dados.nome,
+            dados.cpf,
+            dados.senha,
+            tipo,
+            senhaMestra
+        )();
+
+        if (resultado[0] == true) {
+            alert("Sucesso: " + resultado[1]);
+            window.location.href = "login.html";
+        } else {
+            alert("Erro: " + resultado[1]);
+            modal.style.display = "none";
+        }
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+</script>
+</body>
+</html>
