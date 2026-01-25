@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/1aabbae507.js" crossorigin="anonymous"></script>  
+    <script type="text/javascript" src="/eel.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/estoque.css">
+    <title>Adicionar Venda - Mercado Ximenes</title>
+</head>
+<body>
+
+    <div class="container-venda">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="../img/logo_ximenes.png" alt="Mercado Ximenes">
+            </div>
+
+            <div class="botoes-laterais">
+                <button class="btn-menu ativo">Adicionar Compras</button>
+            </div>
+
+           <div class="rodape-nav">
+                <i class="fa-solid fa-house" id="btn-sair" style="cursor: pointer;"></i>
+            </div>
+        </aside>
+
+        <main class="conteudo-venda">
+            <h2>ADICIONAR VENDA:</h2>
+
+            <div class="card-venda">
+                <div class="secao-card">
+                    <h3 class="titulo-secao">PRODUTO:</h3>
+                    
+                    <div class="lista-produtos" id="lista-produtos"></div>
+
+                    <div class="busca-container" style="position: relative;">
+                        <input type="text" id="input-busca-venda" placeholder="Adicionar novos produtos">
+                        <button class="btn-busca"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <div id="sugestoes-venda" class="autocomplete-suggestions" style="display: none; top: 100%; left:0; width:100%;"></div>
+                    </div>
+                </div>
+
+                <div class="secao-card">
+                    <h3 class="titulo-secao">MÉTODO DE PAGAMENTO:</h3>
+                    <div class="select-customizado">
+                        <select id="metodo-pagamento">
+                            <option value="" disabled selected>Selecionar...</option>
+                            <option value="dinheiro">Dinheiro</option>
+                            <option value="debito">Cartão de Débito</option>
+                            <option value="credito">Cartão de Crédito</option>
+                            <option value="pix">PIX</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="secao-card">
+                    <h3 class="titulo-secao">DESCRIÇÃO: <span class="opcional">(OPCIONAL)</span></h3>
+                    <textarea id="descricao" placeholder="Adicione alguma informação relevante"></textarea>
+                </div>
+
+                <div class="rodape-venda">
+                    <div class="total-venda">
+                        Total: <span id="valor-total">R$ 0,00</span>
+                    </div>
+                    <button class="btn-finalizar" onclick="finalizarVenda()">
+                        Adicionar Nova Compra
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+     <div id="modal-sair" class="modal">
+        <div class="modal-conteudo">
+            <h3>Você tem certeza disso?</h3>
+            <p>Deseja voltar para a página inicial?</p>
+            <div class="modal-botoes">
+                <button type="button" class="btn-modal-nao" id="btn-nao">Não</button>
+                <button type="button" class="btn-modal-sim" id="btn-sim">Sim</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/modal.js"></script> 
+    <script src="../js/vendas.js"></script>
+    </body>
+</html>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/1aabbae507.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/eel.js"></script>
-    <script src="../js/scripts.js"></script>
+    <script src="../js/modal.js"></script>
     <link rel="stylesheet" href="../css/style.css">
     <title>Login - Mercado Ximenes</title>
 </head>
@@ -53,9 +53,14 @@
             
             const sucesso = resultado[0];
             const mensagem = resultado[1];
+            const tipo = resultado[2];
 
             if (sucesso) {
-                mostrarAlerta(mensagem, "compras.html");
+                if (tipo === 'dono'){
+                    mostrarAlerta(mensagem, "compras.html");
+                } else {
+                    mostrarAlerta(mensagem, "caixa.html");
+                }
             } else {
                 mostrarAlerta(mensagem);
             }

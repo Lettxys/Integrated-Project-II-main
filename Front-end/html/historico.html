@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/1aabbae507.js" crossorigin="anonymous"></script> 
+    <script type="text/javascript" src="/eel.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/historico.css">
+    
+    <title>Histórico - Mercado Ximenes</title>
+</head>
+<body>
+
+    <div class="container-venda">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="../img/logo_ximenes.png" alt="Mercado Ximenes">
+            </div>
+
+            <div class="botoes-laterais">
+                 <button class="btn-menu" onclick="window.location.href='compras.html'">Adicionar Compras</button>
+                <button class="btn-menu" onclick="window.location.href='estoque.html'">Estoque</button>
+                <button class="btn-menu ativo">Histórico</button>
+            </div>
+
+            <div class="rodape-nav">
+                <i class="fa-solid fa-right-from-bracket" id="btn-sair" style="cursor: pointer;" title="Sair"></i>
+            </div>
+        </aside>
+
+        <main class="conteudo-venda">
+            <div class="header-top">
+                <h2 class="titulo-historico">HISTÓRICO</h2>
+
+                <div class="busca-historico-container">
+                    <input type="text" id="busca-historico" placeholder="Buscar por data, valor ou produto...">
+                        <button class="btn-busca-historico">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                </div>
+            </div>
+            <div id="container-meses"></div>
+        </main>
+    </div>
+
+    <div id="modal-sair" class="modal" style="display: none;">
+        <div class="modal-conteudo">
+            <h3>Você tem certeza disso?</h3>
+            <p>Deseja voltar para a página inicial?</p>
+            <div class="modal-botoes">
+                <button type="button" class="btn-modal-nao" id="btn-nao">Não</button>
+                <button type="button" class="btn-modal-sim" id="btn-sim">Sim</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-detalhes" class="modal" style="display: none;">
+        <div class="modal-conteudo modal-detalhes-venda">
+            <div class="modal-header">
+                <h3>Detalhes da Venda</h3>
+                <button class="btn-fechar-modal" id="btn-fechar-detalhes" onclick="document.getElementById('modal-detalhes').style.display='none'">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            
+            <div id="conteudo-detalhes">
+                </div>
+        </div>
+    </div>
+
+    <script src="../js/modal.js"></script>
+    <script src="../js/historico.js"></script>
+
+</body>
+</html>

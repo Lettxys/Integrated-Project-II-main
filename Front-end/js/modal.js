@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", function() {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
     const modal = document.getElementById('modal-aviso');
-    window.onclick = function(event) {
+    
+    window.addEventListener('click', function(event) {
         if (event.target == modal) {
             modal.style.display = 'none';
         }
@@ -28,13 +29,43 @@ document.addEventListener("DOMContentLoaded", function() {
         if (modalPergunta && event.target == modalPergunta) {
             modalPergunta.style.display = 'none';
         }
-    };
+    });
+
+    const btnSair = document.getElementById('btn-sair');
+    if (btnSair) {
+        btnSair.onclick = () => {
+            const modalSair = document.getElementById('modal-sair');
+            if (modalSair) modalSair.style.display = 'flex';
+        };
+    }
+
+    const btnNao = document.getElementById('btn-nao');
+    if (btnNao) {
+        btnNao.onclick = () => {
+            const modalSair = document.getElementById('modal-sair');
+            if (modalSair) modalSair.style.display = 'none';
+        };
+    }
+
+    const btnSim = document.getElementById('btn-sim');
+    if (btnSim) {
+        btnSim.onclick = () => {
+            window.location.href = 'index.html';
+        };
+    }
+
+    window.addEventListener('click', function(event) {
+        const modalSair = document.getElementById('modal-sair');
+        if (modalSair && event.target == modalSair) modalSair.style.display = 'none';
+    });
 });
 
 function mostrarAlerta(mensagem, linkRedirecionamento = null) {
     const modal = document.getElementById('modal-aviso');
     const texto = document.getElementById('texto-aviso');
     const botao = document.getElementById('btn-modal-entendido');
+
+    if (!modal || !texto || !botao) return;
 
     texto.textContent = mensagem;
     modal.style.display = 'flex'; 

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/1aabbae507.js" crossorigin="anonymous"></script>  
+    <script type="text/javascript" src="/eel.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/estoque.css">
+    
+    <title>Estoque - Mercado Ximenes</title>
+</head>
+<body>
+
+    <div class="container-venda">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <img src="../img/logo_ximenes.png" alt="Mercado Ximenes">
+            </div>
+
+            <div class="botoes-laterais">
+                <button class="btn-menu" onclick="window.location.href='compras.html'">Adicionar Compras</button>
+                <button class="btn-menu ativo">Estoque</button>
+                <button class="btn-menu" onclick="window.location.href='historico.html'">Histórico</button>
+            </div>
+
+            <div class="rodape-nav">
+                <i class="fa-solid fa-house" id="btn-sair" style="cursor: pointer;"></i>
+            </div>
+        </aside>
+
+        <main class="conteudo-venda">
+            <div class="header-estoque">
+                <div class="busca-estoque-container">
+                    <input type="text" id="busca-geral" placeholder="Buscar produtos em estoque">
+                    <button onclick="buscarProduto()">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="secao-estoque">
+                <h3 class="titulo-secao-estoque">Adicionados Recentemente:</h3>
+                <div class="cards-recentes" id="cards-recentes">
+                    </div>
+            </div>
+
+            <div class="secao-estoque">
+                <h3 class="titulo-secao-estoque">Estoque Completo:</h3>
+                <div id="estoque-alfabetico">
+                    </div>
+            </div>
+        </main>
+    </div>
+
+    <button class="btn-adicionar-flutuante" onclick="abrirModalAdicionar()">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <div id="modal-adicionar" class="modal" style="display: none;">
+        <div class="modal-conteudo" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Preencha as informações a seguir</h3>
+                <button class="btn-fechar-modal" onclick="fecharModalAdicionar()">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+
+            <form onsubmit="salvarProduto(event)">
+                <input type="hidden" id="prod-id">
+
+                <div class="form-group">
+                    <label>Nome do Produto: <span id="badge-existente"></span></label>
+                    <input type="text" id="input-nome" placeholder="Digite o nome do produto" autocomplete="off" required>
+                    <div id="autocomplete-list" class="autocomplete-suggestions" style="display: none;"></div>
+                </div>
+
+                <div class="form-row" style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Preço de Compra (R$):</label>
+                        <input type="number" id="input-preco-compra" step="0.01" placeholder="0,00" required>
+                    </div>
+
+                    <div class="form-group" style="flex: 1;">
+                        <label>Preço de Venda (R$):</label>
+                        <input type="number" id="input-preco-venda" step="0.01" placeholder="0,00" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Quantidade (Número):</label>
+                    <input type="number" id="input-quantidade" placeholder="Ex: 50" min="1" required>
+                </div>
+
+                <button type="submit" class="btn-submit-modal" style="width: 100%; margin-top: 15px;">
+                    <i class="fa-solid fa-check"></i> Salvar Produto
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-sair" class="modal" style="display: none;">
+        <div class="modal-conteudo">
+            <h3>Você tem certeza disso?</h3>
+            <p>Deseja voltar para a página inicial?</p>
+            <div class="modal-botoes">
+                <button type="button" class="btn-modal-nao" id="btn-nao">Não</button>
+                <button type="button" class="btn-modal-sim" id="btn-sim">Sim</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/modal.js"></script>
+    <script src="../js/estoque.js"></script>
+</body>
+</html>

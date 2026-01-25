@@ -1,0 +1,388 @@
+
+.titulo-historico {
+    color: #3b7a2f; 
+    font-weight: 900;
+    margin-bottom: 0px;
+    font-size: 2rem;
+    padding-right: 40px;
+}
+
+
+.busca-historico-container {
+    position: relative;
+    max-width: none !important;
+    width: 850px !important;
+    margin-bottom: 20px;
+}
+
+.busca-historico-container input {
+    width: 100%;
+    height: 55px;
+    border-radius: 30px;
+    border: none;
+    padding: 0 60px 0 25px;
+    font-size: 1rem;
+    outline: none;
+    background-color: #d4e8cf; 
+    color: #3b7a2f;
+    font-weight: 600;
+}
+
+.busca-historico-container input::placeholder {
+    color: #7a9a72;
+}
+
+.btn-busca-historico {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: #4a7a3f; 
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.btn-busca-historico:hover {
+    background-color: #3b6332;
+}
+
+/* RESUMO FINANCEIRO POR MÊS */
+.resumo-mes {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+.card-resumo {
+    background: linear-gradient(135deg, #97c17d 0%, #8fb677 100%);
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    flex: 1;
+}
+
+.card-resumo i {
+    font-size: 2rem;
+    color: white;
+}
+
+.icone-entrada {
+    color: #4CAF50;
+}
+
+.icone-saida {
+    color: #f44336;
+}
+
+.icone-lucro {
+    color: #FFC107;
+}
+
+.label-resumo {
+    font-size: 0.85rem;
+    color: #26411d;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.valor-resumo {
+    font-size: 1.3rem;
+    color: #1a2d14;
+    font-weight: 900;
+}
+
+#container-meses {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    max-width: 1200px; 
+    padding-bottom: 50px;
+}
+
+.secao-mes {
+    background-color: #a8c99c;
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    display: block;
+    margin-bottom: 0;
+    break-inside: auto; 
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; 
+    margin: 0 auto 30px auto; 
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.header-mes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: black;
+    font-weight: 900;
+    font-size: 1.3rem;
+}
+
+.header-mes i {
+    font-size: 1.5rem;
+}
+
+.lista-vendas {
+    max-height: 400px;    
+    overflow-y: auto;      
+    padding-right: 10px;   
+    
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lista-vendas::-webkit-scrollbar { width: 8px; }
+.lista-vendas::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 4px; }
+.lista-vendas::-webkit-scrollbar-thumb { background: #97c17d; border-radius: 4px; }
+
+.item-venda {
+    background-color: #d4e8cf; 
+    border-radius: 15px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 20px;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.item-venda:hover {
+    background-color: #c4d8bf;
+    transform: translateX(5px);
+}
+
+.venda-data {
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: #2c3e50; 
+    min-width: 80px;
+}
+
+.venda-hora {
+    font-size: 0.95rem;
+    color: #5a6a5a;
+    font-weight: 600;
+}
+
+.venda-metodo {
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-align: center;
+    min-width: 120px;
+}
+
+.metodo-pix {
+    background-color: #5cb85c; 
+    color: white;
+}
+
+.metodo-cartao {
+    background-color: #5b7db8; 
+    color: white;
+}
+
+.metodo-dinheiro {
+    background-color: #f0d858; 
+    color: #2c3e50;
+}
+
+.metodo-debito {
+    background-color: #5b7db8; 
+    color: white;
+}
+
+.metodo-credito {
+    background-color: #9575CD;
+    color: white;
+}
+
+.venda-total {
+    font-weight: 900;
+    font-size: 1.2rem;
+    color: #1a2d14;
+    text-align: right;
+    min-width: 120px;
+}
+
+.label-total {
+    font-size: 0.8rem;
+    color: #5a7a4a;
+    font-weight: 600;
+}
+
+/* MODAL DE DETALHES */
+.modal-detalhes-venda {
+    max-width: 600px;
+    position: relative;
+}
+
+.detalhes-header {
+    background-color: #97c17d;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.detalhes-header p {
+    color: #26411d;
+    font-weight: 700;
+    margin: 5px 0;
+}
+
+.detalhes-produtos {
+    margin: 20px 0;
+}
+
+.detalhes-produtos h4 {
+    color: #26411d;
+    margin-bottom: 15px;
+}
+
+.produto-detalhe {
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.produto-detalhe-nome {
+    font-weight: 700;
+    color: #26411d;
+}
+
+.produto-detalhe-info {
+    text-align: right;
+    color: #666;
+}
+
+.detalhes-totais {
+    background-color: #97c17d;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.detalhes-totais p {
+    display: flex;
+    justify-content: space-between;
+    color: #26411d;
+    font-weight: 700;
+    margin: 5px 0;
+}
+
+.detalhes-totais .total-final {
+    font-size: 1.3rem;
+    color: #1a2d14;
+    font-weight: 900;
+    border-top: 2px solid rgba(255, 255, 255, 0.5);
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+.estado-vazio {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.estado-vazio i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: #ccc;
+}
+
+.estado-vazio p {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 768px) {
+    .item-venda {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .venda-total {
+        text-align: left;
+    }
+    
+    .resumo-mes {
+        flex-direction: column;
+    }
+    
+    .card-resumo {
+        min-width: 100%;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee; 
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #26411d;
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+.btn-fechar-modal {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 40px;  
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.btn-fechar-modal:hover {
+    color: #d9534f; 
+    background-color: #ffe6e6; 
+    transform: rotate(90deg); 
+}
