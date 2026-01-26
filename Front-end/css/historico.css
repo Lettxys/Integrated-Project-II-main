@@ -105,6 +105,7 @@
     font-weight: 900;
 }
 
+/* CONTAINER DE MESES */
 #container-meses {
     display: flex;
     flex-direction: column;
@@ -114,6 +115,7 @@
     padding-bottom: 50px;
 }
 
+/* SEÇÃO DE MÊS */
 .secao-mes {
     background-color: #a8c99c;
     border-radius: 20px;
@@ -130,7 +132,7 @@
     align-items: center;
     width: 100%;
     max-width: 1200px; 
-    margin: 0 auto 30px auto; 
+    margin: 0 auto 30px auto;
     padding-bottom: 10px;
     border-bottom: 2px solid #e0e0e0;
 }
@@ -150,9 +152,9 @@
 }
 
 .lista-vendas {
-    max-height: 400px;    
+    max-height: 400px;     
     overflow-y: auto;      
-    padding-right: 10px;   
+    padding-right: 10px;    
     
     display: flex;
     flex-direction: column;
@@ -313,6 +315,7 @@
     margin-top: 10px;
 }
 
+/* ESTADO VAZIO */
 .estado-vazio {
     text-align: center;
     padding: 60px 20px;
@@ -373,7 +376,7 @@
     color: #888;
     cursor: pointer;
     transition: 0.3s;
-    width: 40px;  
+    width: 40px;
     height: 40px;
     display: flex;
     align-items: center;

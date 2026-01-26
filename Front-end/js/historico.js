@@ -183,11 +183,21 @@ function renderizarVendas(vendas) {
             const metodoSlug = metodoPagamento.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             const metodoClasse = `metodo-${metodoSlug}`;
             
+            // Indicador de Pendente
+            let iconeStatus = '';
+            let estiloPendente = '';
+            
+            if (venda.isInstallment && venda.statusPagamento === 0) {
+                iconeStatus = '<i class="fa-solid fa-clock" style="color: #ff9800; margin-right: 5px;" title="Pagamento Pendente/Parcelado"></i> ';
+                estiloPendente = 'border-left: 4px solid #ff9800;';
+            }
+            
             const itemVenda = document.createElement('div');
             itemVenda.className = 'item-venda';
+            if (estiloPendente) itemVenda.style.cssText = estiloPendente;
             
             itemVenda.innerHTML = `
-                <div><div class="venda-data">${dia}/${mesNum}</div></div>
+                <div><div class="venda-data">${iconeStatus}${dia}/${mesNum}</div></div>
                 <div class="venda-hora">${hora}:${min}</div>
                 <div class="venda-metodo ${metodoClasse}">${metodoPagamento.toUpperCase()}</div>
                 <div class="venda-total">
@@ -209,7 +219,8 @@ function configurarBusca() {
     if (!input) return;
     
     input.addEventListener('input', function() {
-        const termo = this.value.toLowerCase().trim();
+        // Normaliza o termo de busca (remove acentos)
+        const termo = this.value.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         
         if (termo === '') {
             renderizarVendas(todasVendasCache);
@@ -217,10 +228,11 @@ function configurarBusca() {
         }
         
         const filtrados = todasVendasCache.filter(venda => {
-            const dataTexto = venda.data || ""; 
-            const produtosTexto = venda.produtos ? venda.produtos.map(p => p.nome.toLowerCase()).join(' ') : "";
+            // Normaliza os campos de busca também
+            const dataTexto = (venda.data || "").normalize("NFD").replace(/[\u0300-\u036f]/g, ""); 
+            const produtosTexto = venda.produtos ? venda.produtos.map(p => p.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")).join(' ') : "";
             const valorTexto = venda.total.toString();
-            const metodoTexto = (venda.metodoPagamento || "").toLowerCase();
+            const metodoTexto = (venda.metodoPagamento || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             
             return dataTexto.includes(termo) || 
                    produtosTexto.includes(termo) || 
@@ -260,6 +272,28 @@ function abrirDetalhes(venda) {
     }
     
     const lucroVenda = venda.total - custosTotal;
+    
+    // Lógica de Status de Pagamento
+    let htmlStatus = '';
+    if (venda.isInstallment) {
+        if (venda.statusPagamento === 1) {
+            htmlStatus = `
+                <div style="margin-top: 20px; padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; color: #155724;">
+                    <i class="fa-solid fa-check-circle"></i> <strong>Pagamento Concluído</strong>
+                </div>
+            `;
+        } else {
+            htmlStatus = `
+                <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 8px; color: #856404;">
+                    <p style="margin-bottom: 5px;"><i class="fa-solid fa-triangle-exclamation"></i> <strong>Pagamento Pendente / Parcelado</strong></p>
+                    <p style="font-size: 0.9rem; margin-bottom: 10px;">Detalhes: ${venda.installmentsInfo || 'Sem detalhes'}</p>
+                    <button onclick="marcarComoPago(${venda.id})" style="background-color: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+                        <i class="fa-solid fa-check"></i> Marcar como Pago
+                    </button>
+                </div>
+            `;
+        }
+    }
 
     conteudo.innerHTML = `
         <div class="detalhes-header">
@@ -278,9 +312,25 @@ function abrirDetalhes(venda) {
             <p><span>Custos:</span> <span>R$ ${custosTotal.toFixed(2)}</span></p>
             <p class="total-final"><span>Lucro Líquido:</span> <span>R$ ${lucroVenda.toFixed(2)}</span></p>
         </div>
+
+        ${htmlStatus}
     `;
     
     modal.style.display = 'flex';
+}
+
+window.marcarComoPago = function(idVenda) {
+    mostrarConfirmacao("Tem certeza que deseja marcar esta venda como PAGA?", async () => {
+        const resultado = await eel.atualizar_status_venda(idVenda, 1)(); // 1 = Pago
+        
+        if (resultado[0]) {
+            mostrarAlerta("Status atualizado com sucesso!");
+            fecharModalDetalhes();
+            await carregarVendasDoPython(); // Recarrega a lista
+        } else {
+            mostrarAlerta("Erro ao atualizar status: " + resultado[1]);
+        }
+    });
 }
 
 function fecharModalDetalhes() {

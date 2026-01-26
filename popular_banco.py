@@ -1,8 +1,7 @@
 import sqlite3
 import random
 from datetime import datetime, timedelta
-from BD import database 
-
+from BD import database  
 DB_NAME = database.DB_NAME
 
 # ========================================
@@ -110,7 +109,7 @@ def popular_tudo(num_vendas=30):
         hora = random.randint(8, 20)
         minuto = random.randint(0, 59)
         data_venda = (data_base - timedelta(days=dias_atras)).replace(hour=hora, minute=minuto)
-        data_str = data_venda.strftime("%d/%m/%Y %H:%M") 
+        data_str = data_venda.strftime("%d/%m/%Y %H:%M") # Formato correto
         
         # Sorteia itens
         qtd_itens = random.randint(1, 5)

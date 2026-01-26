@@ -11,6 +11,16 @@ let carrinho = [];
 window.onload = function() {
     configurarBusca();
     renderizarCarrinho(); // Chama ao iniciar para mostrar o texto "Nenhum produto..."
+
+    // Configura o toggle de parcelamento
+    const checkParcelado = document.getElementById('check-parcelado');
+    const containerInfo = document.getElementById('info-parcelas-container');
+    
+    if (checkParcelado && containerInfo) {
+        checkParcelado.addEventListener('change', function() {
+            containerInfo.style.display = this.checked ? 'block' : 'none';
+        });
+    }
 };
 
 /**
@@ -37,6 +47,7 @@ function configurarBusca() {
         if (resultados.length > 0) {
             sugestoes.style.display = 'block';
             
+            // AGORA 'dado' É UMA LISTA: [nome, estoque, preço]
             resultados.forEach(dado => {
                 const nome = dado[0];
                 const estoque = dado[1];
@@ -186,14 +197,21 @@ window.finalizarVenda = async function() {
     const metodo = document.getElementById('metodo-pagamento').value;
     const descricao = document.getElementById('descricao').value;
     
+    const checkParceladoEl = document.getElementById('check-parcelado');
+    const infoParcelasEl = document.getElementById('info-parcelas');
+
+    const isInstallment = checkParceladoEl ? checkParceladoEl.checked : false;
+    const installmentInfo = infoParcelasEl ? infoParcelasEl.value : "";
+    
     if (!metodo) {
         mostrarAlerta("Selecione um método de pagamento.");
         return;
     }
 
     const total = carrinho.reduce((acc, item) => acc + (item.preco * item.qtd), 0);
+    
     // Envia o carrinho com IDs. O backend valida preço e estoque.
-    const res = await eel.realizar_venda(total, metodo, descricao, carrinho)();
+    const res = await eel.realizar_venda(total, metodo, descricao, carrinho, isInstallment, installmentInfo)();
 
     if (res[0]) {
         mostrarAlerta("Venda realizada com sucesso!");
@@ -201,6 +219,12 @@ window.finalizarVenda = async function() {
         renderizarCarrinho(); 
         document.getElementById('metodo-pagamento').value = '';
         document.getElementById('descricao').value = '';
+        
+        if (checkParceladoEl) checkParceladoEl.checked = false;
+        if (infoParcelasEl) infoParcelasEl.value = '';
+        
+        const infoContainer = document.getElementById('info-parcelas-container');
+        if (infoContainer) infoContainer.style.display = 'none';
     } else {
         mostrarAlerta("Erro: " + res[1]);
     }

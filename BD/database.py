@@ -1,8 +1,8 @@
 import sqlite3
 import hashlib
 import secrets
-import unicodedata
 from datetime import datetime
+import unicodedata
 
 DB_NAME = "mercado_projeto.db"
 
@@ -74,6 +74,7 @@ def criar_banco():
     ''')
 
     # 3. Tabela Vendas 
+    #is_installment = é parcelado/fiado, depende do contexto
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS vendas (
             id_venda INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,7 +82,9 @@ def criar_banco():
             mtd_pagamento TEXT,
             status_pagamento INTEGER, 
             data_venda TEXT,
-            descricao TEXT
+            descricao TEXT,
+            is_installment INTEGER DEFAULT 0,  
+            installments_info TEXT DEFAULT ''
         )
     ''')
 
@@ -195,42 +198,46 @@ def buscar_produto(nome):
     """
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-
     try:
         cursor.execute("SELECT id_produto, nome, preco_custo, preco_venda, estoque_atual, data_compra FROM produtos WHERE nome = ?", (nome,))
         return cursor.fetchone()
     finally:
         conn.close()
 
-def salvar_produto(nome, preco_compra, preco_venda, quantidade):
+def salvar_produto(nome, preco_compra, preco_venda, quantidade, id_produto=None):
     """
     Salva um produto no estoque.
-    Se o produto já existir (pelo nome), atualiza os dados.
-    Caso contrário, insere um novo produto.
+    Se um id_produto for fornecido, atualiza o produto específico.
+    Caso contrário, verifica se existe pelo nome para atualizar ou inserir.
     """
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     data_hoje = datetime.now().strftime("%d/%m/%Y")
     
     try:
-        # Verifica se já existe esse produto pelo nome
-        cursor.execute("SELECT id_produto FROM produtos WHERE nome = ?", (nome,))
-        produto = cursor.fetchone()
-        
-        if produto:
-            # Atualiza o produto existente
+        if id_produto:
+            # Atualiza pelo ID
             cursor.execute("""
                 UPDATE produtos
-                SET estoque_atual = ?, preco_custo = ?, preco_venda = ?, data_compra = ?
+                SET nome = ?, estoque_atual = ?, preco_custo = ?, preco_venda = ?, data_compra = ?
                 WHERE id_produto = ?
-            """, (quantidade, preco_compra, preco_venda, data_hoje, produto[0]))
-            
+            """, (nome, quantidade, preco_compra, preco_venda, data_hoje, id_produto))
         else:
-            # Insere novo produto
-            cursor.execute("""
-                INSERT INTO produtos (nome, preco_custo, preco_venda, estoque_atual, data_compra)
-                VALUES (?, ?, ?, ?, ?)
-            """, (nome, preco_compra, preco_venda, quantidade, data_hoje))
+            # Verifica se já existe pelo nome
+            cursor.execute("SELECT id_produto FROM produtos WHERE nome = ?", (nome,))
+            produto = cursor.fetchone()
+            
+            if produto:
+                cursor.execute("""
+                    UPDATE produtos
+                    SET estoque_atual = ?, preco_custo = ?, preco_venda = ?, data_compra = ?
+                    WHERE id_produto = ?
+                """, (quantidade, preco_compra, preco_venda, data_hoje, produto[0]))
+            else:
+                cursor.execute("""
+                    INSERT INTO produtos (nome, preco_custo, preco_venda, estoque_atual, data_compra)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (nome, preco_compra, preco_venda, quantidade, data_hoje))
         
         conn.commit()
         return True, "Produto salvo com sucesso!"
@@ -251,18 +258,17 @@ def listar_produtos():
     finally:
         conn.close()
 
-def registrar_venda(total_cliente, metodo_pagamento, descricao, itens):
+def registrar_venda(total_cliente, metodo_pagamento, descricao, itens, is_installment=False, installments_info=""):
     """
     Registra uma nova venda no sistema e atualiza o estoque.
-    
-    IMPORTANTE: O cálculo do valor total é refeito no servidor usando os preços do banco de dados
-    para garantir a integridade e evitar manipulação. (segurança)
     
     Args:
         total_cliente: Valor total calculado pelo front-end (ignorado para cálculo final).
         metodo_pagamento: Método escolhido (Dinheiro, Cartão, etc).
         descricao: Descrição opcional da venda.
         itens: Lista de dicionários contendo {'id': ..., 'qtd': ...}.
+        is_installment (bool): Se é uma venda parcelada/fiada.
+        installments_info (str): Detalhes do parcelamento (ex: "3x").
     """
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
@@ -301,11 +307,15 @@ def registrar_venda(total_cliente, metodo_pagamento, descricao, itens):
                 "preco_custo": preco_custo
             })
 
+        # Define status: 1 = Pago, 0 = Pendente (Parcelado/Fiado)
+        status_inicial = 0 if is_installment else 1
+        flag_installment = 1 if is_installment else 0
+
         # Registrar a venda
         cursor.execute('''
-            INSERT INTO vendas (valor, mtd_pagamento, status_pagamento, data_venda, descricao)
-            VALUES (?, ?, 1, ?, ?)
-        ''', (valor_total_real, metodo_pagamento, data_hoje, descricao))
+            INSERT INTO vendas (valor, mtd_pagamento, status_pagamento, data_venda, descricao, is_installment, installments_info)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (valor_total_real, metodo_pagamento, status_inicial, data_hoje, descricao, flag_installment, installments_info))
 
         id_venda = cursor.lastrowid
 
@@ -363,18 +373,42 @@ def obter_historico_vendas():
                     "precoCusto": item['preco_custo']
                 })
             
+            # Recupera campos de parcelamento com fallback seguro (Pra quem não sabe "Fallback" é tipo um plano B)
+            is_installment = bool(venda['is_installment']) if 'is_installment' in venda.keys() else False
+            installments_info = venda['installments_info'] if 'installments_info' in venda.keys() else ""
+            status_pagamento = venda['status_pagamento']
+
             resultado.append({
                 "id": venda['id_venda'],
                 "data": venda['data_venda'],
                 "metodoPagamento": venda['mtd_pagamento'],
                 "total": venda['valor'],
                 "descricao": venda['descricao'] or "",
-                "produtos": produtos_lista
+                "produtos": produtos_lista,
+                "isInstallment": is_installment,
+                "installmentsInfo": installments_info,
+                "statusPagamento": status_pagamento
             })
 
         return resultado
 
     except Exception as e:
         return []
+    finally:
+        conn.close()
+
+def atualizar_status_pagamento(id_venda, novo_status):
+    """
+    Atualiza o status de pagamento de uma venda.
+    novo_status: 1 (Pago), 0 (Pendente)
+    """
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("UPDATE vendas SET status_pagamento = ? WHERE id_venda = ?", (novo_status, id_venda))
+        conn.commit()
+        return True, "Status atualizado com sucesso."
+    except Exception as e:
+        return False, str(e)
     finally:
         conn.close()

@@ -52,9 +52,9 @@ def buscar_produto(nome):
     return database.buscar_produto(nome)
 
 @eel.expose
-def salvar_produto(nome, preco_compra, preco_venda, quantidade):
+def salvar_produto(nome, preco_compra, preco_venda, quantidade,  id_produto=None):
     """Salva ou atualiza um produto no estoque."""
-    return database.salvar_produto(nome, preco_compra, preco_venda, quantidade)
+    return database.salvar_produto(nome, preco_compra, preco_venda, quantidade, id_produto)
 
 @eel.expose
 def obter_produtos():
@@ -62,18 +62,24 @@ def obter_produtos():
     return database.listar_produtos()
 
 @eel.expose
-def realizar_venda(total, metodo, descricao, lista_itens):
+def realizar_venda(total, metodo, descricao, lista_itens, is_installment=False, installments_info=""):
     """
     Registra uma venda.
     O total é recalculado no backend por segurança.
+    Aceita parâmetros de parcelamento.
     """
-    return database.registrar_venda(total, metodo, descricao, lista_itens)
+    return database.registrar_venda(total, metodo, descricao, lista_itens, is_installment, installments_info)
 
 @eel.expose
 def carregar_historico():
     """Retorna o histórico de vendas."""
     return database.obter_historico_vendas()
 
+@eel.expose
+def atualizar_status_venda(id_venda, novo_status):
+    """Atualiza o status de pagamento de uma venda (0=Pendente, 1=Pago)."""
+    return database.atualizar_status_pagamento(id_venda, novo_status)
+
 # Inicia a aplicação Eel
 if __name__ == "__main__":
-     eel.start('html/index.html', size=(1200, 800), shutdown_delay=5.0)
+    eel.start('html/index.html', size=(1200, 800), shutdown_delay=5.0)

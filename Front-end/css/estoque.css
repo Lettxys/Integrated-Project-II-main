@@ -76,7 +76,7 @@
     background-color: #b8c9e8; 
     padding: 20px;
     border-radius: 20px;
-    width: 100%; /* Garante 100% */
+    width: 100%; 
 }
 
 /* ===================================
@@ -416,12 +416,8 @@
 
 #estoque-alfabetico.grade-busca .card-produto {
     width: 100% !important;
-    max-width: none !important;
+    max-width: 100% !important; 
     min-width: 0 !important;
-}
-
-#estoque-alfabetico.grade-busca .card-produto:only-child {
-    grid-column: 1 / -1;
 }
 
 @media (max-width: 900px) {

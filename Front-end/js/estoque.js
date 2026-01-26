@@ -14,7 +14,9 @@ window.onload = async function() {
     setupEventListeners();
 };
 
-/* Configura os ouvintes de eventos da página. */
+/**
+ * Configura os ouvintes de eventos da página.
+ */
 function setupEventListeners() {
     // --- Autocomplete no modal de adicionar/editar ---
     const inputNome = document.getElementById('input-nome');
@@ -56,7 +58,7 @@ function setupEventListeners() {
     }
 
     // --- Busca geral na página (Filtro) ---
-     const inputBusca = document.getElementById('busca-geral');
+    const inputBusca = document.getElementById('busca-geral');
     if (inputBusca) {
         inputBusca.addEventListener('input', function(e) {
             // Normaliza o termo de busca (remove acentos e lowercase)
@@ -225,7 +227,8 @@ function renderizarEstoqueAlfabetico() {
 
     const grupos = {};
     estoque.forEach(p => {
-        const letra = p.nome.charAt(0).toUpperCase();
+        // Normaliza a primeira letra para agrupar (ex: Á -> A)
+        const letra = p.nome.charAt(0).toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         if (!grupos[letra]) grupos[letra] = [];
         grupos[letra].push(p);
     });
@@ -266,12 +269,13 @@ function renderizarEstoqueAlfabetico() {
 async function salvarProduto(event) {
     event.preventDefault(); 
 
+    const id = document.getElementById('prod-id').value; // Pega o ID (pode ser vazio se for novo)
     const nome = document.getElementById('input-nome').value.trim();
     const compra = parseFloat(document.getElementById('input-preco-compra').value);
     const venda = parseFloat(document.getElementById('input-preco-venda').value);
     const qtd = parseInt(document.getElementById('input-quantidade').value);
 
-    const resultado = await eel.salvar_produto(nome, compra, venda, qtd)();
+    const resultado = await eel.salvar_produto(nome, compra, venda, qtd, id)();
 
     if (resultado[0]) {
         if (typeof mostrarAlerta === "function") {

@@ -55,6 +55,16 @@
                             <option value="pix">PIX</option>
                         </select>
                     </div>
+
+                    <!-- Área de Parcelamento -->
+                    <div style="margin-top: 15px; display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="check-parcelado" style="width: 20px; height: 20px; cursor: pointer;">
+                        <label for="check-parcelado" style="font-weight: bold; color: #1a2d14; cursor: pointer;">Venda Parcelada / Pendente</label>
+                    </div>
+                    <div id="info-parcelas-container" style="display: none; margin-top: 10px;">
+                        <input type="text" id="info-parcelas" placeholder="Detalhes (ex: 3x, Entrada + 2x)" 
+                               style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px;">
+                    </div>
                 </div>
 
                 <div class="secao-card">
