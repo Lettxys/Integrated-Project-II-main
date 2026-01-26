@@ -76,4 +76,4 @@ def carregar_historico():
 
 # Inicia a aplicação Eel
 if __name__ == "__main__":
-    eel.start('html/index.html', size=(1200, 800))
+     eel.start('html/index.html', size=(1200, 800), shutdown_delay=5.0)

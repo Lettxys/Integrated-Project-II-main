@@ -56,10 +56,11 @@ function setupEventListeners() {
     }
 
     // --- Busca geral na página (Filtro) ---
-    const inputBusca = document.getElementById('busca-geral');
+     const inputBusca = document.getElementById('busca-geral');
     if (inputBusca) {
         inputBusca.addEventListener('input', function(e) {
-            const termo = e.target.value.toLowerCase();
+            // Normaliza o termo de busca (remove acentos e lowercase)
+            const termo = e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
             
             const secaoRecentes = document.querySelector('.secao-estoque:has(#cards-recentes)') || (document.getElementById('cards-recentes') ? document.getElementById('cards-recentes').parentElement : null);
             const containerAlfabetico = document.getElementById('estoque-alfabetico');
@@ -84,7 +85,10 @@ function setupEventListeners() {
             if(secaoRecentes) secaoRecentes.style.display = 'none';
             if(tituloAlfabetico) tituloAlfabetico.textContent = `Resultados para "${e.target.value}":`;
 
-            const filtrados = estoque.filter(p => p.nome.toLowerCase().includes(termo));
+            const filtrados = estoque.filter(p => {
+                const nomeNorm = p.nome.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return nomeNorm.includes(termo);
+            });
 
             containerAlfabetico.innerHTML = '';
             containerAlfabetico.classList.add('grade-busca');

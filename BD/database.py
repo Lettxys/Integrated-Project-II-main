@@ -1,6 +1,7 @@
 import sqlite3
 import hashlib
 import secrets
+import unicodedata
 from datetime import datetime
 
 DB_NAME = "mercado_projeto.db"
@@ -165,16 +166,25 @@ def validar_login(user, senha):
     
     return False, None, None
 
+def normalize_db_string(text):
+    """Remove acentos e converte para minúsculas para facilitar a busca."""
+    if text is None: return ""
+    return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn').lower()
+
 def autocomplete_produtos(texto):
     """
     Busca produtos que contenham o texto fornecido no nome.
+    A busca ignora acentos e maiúsculas/minúsculas.
     Retorna uma lista de tuplas (nome, estoque, preço).
     Usado para sugestões na tela de vendas.
     """
     conn = sqlite3.connect(DB_NAME)
+    # Registra a função de normalização no SQLite
+    conn.create_function("NORMALIZE", 1, normalize_db_string)
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT nome, estoque_atual, preco_venda FROM produtos WHERE nome LIKE ? LIMIT 10", (f"%{texto}%",))
+        texto_norm = normalize_db_string(texto)
+        cursor.execute("SELECT nome, estoque_atual, preco_venda FROM produtos WHERE NORMALIZE(nome) LIKE ? LIMIT 10", (f"%{texto_norm}%",))
         return cursor.fetchall() 
     finally:
         conn.close()
@@ -185,6 +195,7 @@ def buscar_produto(nome):
     """
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
+
     try:
         cursor.execute("SELECT id_produto, nome, preco_custo, preco_venda, estoque_atual, data_compra FROM produtos WHERE nome = ?", (nome,))
         return cursor.fetchone()
